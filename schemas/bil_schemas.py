@@ -21,22 +21,23 @@ class CustomerUpdate(BaseModel):
 # Schema for creating a new prescription
 class PrescriptionCreate(BaseModel):
     customer_id: int
-    right_sph: Optional[float] = None
-    right_cyl: Optional[float] = None
-    right_axis: Optional[int] = None
-    left_sph: Optional[float] = None
-    left_cyl: Optional[float] = None
-    left_axis: Optional[int] = None
-    add: Optional[float] = None
-    pd: Optional[float] = None
+    right_sph: Optional[str] = None
+    right_cyl: Optional[str] = None
+    right_axis: Optional[str] = None
+    left_sph: Optional[str] = None
+    left_cyl: Optional[str] = None
+    left_axis: Optional[str] = None
+    add: Optional[str] = None
+    pd: Optional[str] = None
     date_prescribed: date
 
 # Schema for billing creation
+
 class BillingCreate(BaseModel):
     customer_id: int
     invoice_date: date
+    delivery_date: Optional[date] = None  # Add this line for delivery_date
     sales_person: Optional[str] = None
-
 # Schema for creating a billing item
 class BillingItemCreate(BaseModel):
     billing_id: int

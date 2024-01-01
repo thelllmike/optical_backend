@@ -1,5 +1,5 @@
 # customer.py
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from mysqlx import Session
 from sqlalchemy.exc import SQLAlchemyError
 from schemas.bil_schemas import CustomerCreate, PrescriptionCreate, BillingCreate, BillingItemCreate, PaymentDetailCreate
@@ -28,25 +28,35 @@ async def create_customer(customer_data: CustomerCreate):
 
 @router.post("/customers/{customer_id}/prescriptions", response_model=PrescriptionCreate)
 async def create_prescription(customer_id: int, prescription_data: PrescriptionCreate):
+    # Prepare the data for insertion
+    prescription_values = prescription_data.dict()
+    prescription_values.pop("customer_id", None)  # Remove customer_id if it exists in dict
+
+    # Insert prescription linked to the customer
     with engine.begin() as connection:
         try:
-            # Insert prescription linked to the customer
-            prescription_result = connection.execute(prescriptions.insert().values(customer_id=customer_id, **prescription_data.dict()))
+            prescription_result = connection.execute(prescriptions.insert().values(customer_id=customer_id, **prescription_values))
             prescription_id = prescription_result.inserted_primary_key[0]
             return {"id": prescription_id, **prescription_data.dict()}
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/customers/{customer_id}/billings", response_model=BillingCreate)
-async def create_billing(customer_id: int, billing_data: BillingCreate):
-    with engine.begin() as connection:
-        try:
-            # Insert billing details linked to the customer
-            billing_result = connection.execute(billings.insert().values(customer_id=customer_id, **billing_data.dict()))
-            billing_id = billing_result.inserted_primary_key[0]
-            return {"id": billing_id, **billing_data.dict()}
-        except SQLAlchemyError as e:
-            raise HTTPException(status_code=500, detail=str(e))
+async def create_billing(customer_id: int, billing_data: BillingCreate, db: Session = Depends(get_db)):
+    try:
+        # Create a new billing record with delivery_date
+        new_billing = billings.insert().values(
+            customer_id=customer_id, 
+            invoice_date=billing_data.invoice_date,
+            delivery_date=billing_data.delivery_date,  # Include delivery_date here
+            sales_person=billing_data.sales_person
+        )
+        db.execute(new_billing)
+        db.commit()
+        return billing_data
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/billings/{billing_id}/items", response_model=BillingItemCreate)
 async def create_billing_item(billing_id: int, billing_item_data: BillingItemCreate):

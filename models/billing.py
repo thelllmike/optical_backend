@@ -18,22 +18,23 @@ prescriptions = Table(
     "prescriptions", metadata,
     Column("id", Integer, primary_key=True),
     Column("customer_id", None, ForeignKey("customers.id"), nullable=False),
-    Column("right_sph", Float),
-    Column("right_cyl", Float),
-    Column("right_axis", Integer),
-    Column("left_sph", Float),
-    Column("left_cyl", Float),
-    Column("left_axis", Integer),
-    Column("add", Float),
-    Column("pd", Float),
+    Column("right_sph", String),
+    Column("right_cyl", String),
+    Column("right_axis", String),
+    Column("left_sph", String),
+    Column("left_cyl", String),
+    Column("left_axis", String),
+    Column("add", String),
+    Column("pd", String),
     Column("date_prescribed", Date, nullable=False)
 )
 
 billings = Table(
     "billings", metadata,
     Column("id", Integer, primary_key=True),
-    Column("customer_id", None, ForeignKey("customers.id"), nullable=False),
+    Column("customer_id", Integer, ForeignKey("customers.id"), nullable=False),
     Column("invoice_date", Date, nullable=False),
+    Column("delivery_date", Date, nullable=True),  # Add this line for delivery_date
     Column("sales_person", String(100), nullable=True)
 )
 
