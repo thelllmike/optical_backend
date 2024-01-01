@@ -41,10 +41,10 @@ class BillingCreate(BaseModel):
 # Schema for creating a billing item
 class BillingItemCreate(BaseModel):
     billing_id: int
-    lens: str
-    frame: str  # 'frame' or 'lens'
+    # lens: str
+    # frame: str  # 'frame' or 'lens'
     lens_id: int
-    lens_id: int  # ID from frames or lenses table
+    frame_id: int  # ID from frames or lenses table
     quantity: int
     unit_price: float
 

@@ -42,8 +42,10 @@ billing_items = Table(
     "billing_items", metadata,
     Column("id", Integer, primary_key=True),
     Column("billing_id", None, ForeignKey("billings.id"), nullable=False),
-    Column("product_type", String(50), nullable=False), # 'frame' or 'lens'
-    Column("product_id", Integer, nullable=False), # ID from frames or lenses table
+    # Column("frame", String(50), nullable=False),
+    # Column("lens", String(50), nullable=False),
+    Column("frame_id", Integer, nullable=False), # 'frame' or 'lens'
+    Column("lens_id", Integer, nullable=False), # ID from frames or lenses table
     Column("quantity", Integer, nullable=False),
     Column("unit_price", Float, nullable=False)
 )

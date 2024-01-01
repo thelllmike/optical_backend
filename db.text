@@ -1,0 +1,86 @@
+CREATE TABLE `optical_system`.`customers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `mobile_number` VARCHAR(45) NOT NULL,
+  `full_name` VARCHAR(255) NOT NULL,
+  `nic_number` VARCHAR(45) NULL,
+  `address` TEXT NULL,
+  `gender` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+  
+  CREATE TABLE `optical_system`.`prescriptions` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `customer_id` INT NOT NULL,
+  `right_sph` FLOAT,
+  `right_cyl` FLOAT,
+  `right_axis` INT,
+  `left_sph` FLOAT,
+  `left_cyl` FLOAT,
+  `left_axis` INT,
+  `add` FLOAT,
+  `pd` FLOAT,
+  `date_prescribed` DATE NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`),
+  INDEX `idx_customer` (`customer_id`)
+);
+INSERT INTO `optical_system`.`prescriptions` (
+  `customer_id`, 
+  `right_sph`, 
+  `right_cyl`, 
+  `right_axis`, 
+  `left_sph`, 
+  `left_cyl`, 
+  `left_axis`, 
+  `add`, 
+  `pd`, 
+  `date_prescribed`
+) VALUES (
+  1,           -- Assuming there is a customer with ID 1
+  0.5,         -- right_sph
+  1.0,         -- right_cyl
+  -0.5,        -- right_axis (Assuming your table allows negative values)
+  -1.0,        -- left_sph
+  2.0,         -- left_cyl
+  1.0,         -- left_axis
+  1.0,         -- add
+  32,          -- pd
+  '2024-01-01' -- date_prescribed
+);
+
+CREATE TABLE `optical_system`.`billings` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `customer_id` INT NOT NULL,
+  `invoice_date` DATE NOT NULL,
+  `delivery_date` DATE,  -- This line adds the delivery_date column which can be NULL
+  `sales_person` VARCHAR(100),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`)
+);
+
+ALTER TABLE `optical_system`.`billings` ADD COLUMN `delivery_date` DATE;
+
+CREATE TABLE `optical_system`.`billing_items` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `billing_id` INT NOT NULL,
+  `frame_id` INT NOT NULL,
+  `lens_id` INT NOT NULL,
+  `quantity` INT NOT NULL,
+  `unit_price` FLOAT NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`billing_id`) REFERENCES `billings`(`id`)
+);
+
+CREATE TABLE `optical_system`.`payment_details` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `billing_id` INT NOT NULL,
+  `total_amount` FLOAT NOT NULL,
+  `discount` FLOAT,
+  `fitting_charges` FLOAT,
+  `grand_total` FLOAT NOT NULL,
+  `advance_paid` FLOAT,
+  `balance_amount` FLOAT,
+  `pay_type` VARCHAR(50),  -- E.g., 'cash', 'credit card', 'check'
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`billing_id`) REFERENCES `billings`(`id`)
+);
+

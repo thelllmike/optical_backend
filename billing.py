@@ -41,43 +41,47 @@ async def create_prescription(customer_id: int, prescription_data: PrescriptionC
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/customers/{customer_id}/billings", response_model=BillingCreate)
-async def create_billing(customer_id: int, billing_data: BillingCreate, db: Session = Depends(get_db)):
-    try:
-        # Create a new billing record with delivery_date
-        new_billing = billings.insert().values(
-            customer_id=customer_id, 
-            invoice_date=billing_data.invoice_date,
-            delivery_date=billing_data.delivery_date,  # Include delivery_date here
-            sales_person=billing_data.sales_person
-        )
-        db.execute(new_billing)
-        db.commit()
-        return billing_data
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+@router.post("/billings", response_model=BillingCreate)
+async def create_billing(billing_data: BillingCreate):
+    with engine.begin() as connection:
+        try:
+            # Insert billing into the database
+            billing_result = connection.execute(billings.insert().values(**billing_data.dict()))
+            billing_id = billing_result.inserted_primary_key[0]
+            return {"id": billing_id, **billing_data.dict()}
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/billings/{billing_id}/items", response_model=BillingItemCreate)
 async def create_billing_item(billing_id: int, billing_item_data: BillingItemCreate):
     with engine.begin() as connection:
         try:
+            # Create a dictionary from billing_item_data and remove billing_id if it exists
+            billing_item_data_dict = billing_item_data.dict()
+            billing_item_data_dict.pop('billing_id', None)
+
             # Insert billing item linked to the billing record
-            billing_item_result = connection.execute(billing_items.insert().values(billing_id=billing_id, **billing_item_data.dict()))
+            billing_item_result = connection.execute(billing_items.insert().values(billing_id=billing_id, **billing_item_data_dict))
             billing_item_id = billing_item_result.inserted_primary_key[0]
             return {"id": billing_item_id, **billing_item_data.dict()}
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/billings/{billing_id}/payment-details", response_model=PaymentDetailCreate)
 async def create_payment_detail(billing_id: int, payment_detail_data: PaymentDetailCreate):
     with engine.begin() as connection:
         try:
+            # Create a dictionary from payment_detail_data and remove billing_id if it exists
+            payment_detail_data_dict = payment_detail_data.dict()
+            payment_detail_data_dict.pop('billing_id', None)
+
             # Insert payment details linked to the billing record
-            payment_detail_result = connection.execute(payment_details.insert().values(billing_id=billing_id, **payment_detail_data.dict()))
+            payment_detail_result = connection.execute(payment_details.insert().values(billing_id=billing_id, **payment_detail_data_dict))
             payment_detail_id = payment_detail_result.inserted_primary_key[0]
             return {"id": payment_detail_id, **payment_detail_data.dict()}
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
+
 
 # Additional endpoints for reading, updating, and deleting customers would be added here...
