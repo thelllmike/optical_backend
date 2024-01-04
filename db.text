@@ -4,8 +4,10 @@ CREATE TABLE `optical_system`.`customers` (
   `full_name` VARCHAR(255) NOT NULL,
   `nic_number` VARCHAR(45) NULL,
   `address` TEXT NULL,
-  `gender` VARCHAR(45) NULL,
-  PRIMARY KEY (`id`));
+  `gender` VARCHAR(45) NULL CHECK (`gender` IN ('Male', 'Female', 'Other')),
+  PRIMARY KEY (`id`)
+);
+
   
   CREATE TABLE `optical_system`.`prescriptions` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -23,29 +25,7 @@ CREATE TABLE `optical_system`.`customers` (
   FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`),
   INDEX `idx_customer` (`customer_id`)
 );
-INSERT INTO `optical_system`.`prescriptions` (
-  `customer_id`, 
-  `right_sph`, 
-  `right_cyl`, 
-  `right_axis`, 
-  `left_sph`, 
-  `left_cyl`, 
-  `left_axis`, 
-  `add`, 
-  `pd`, 
-  `date_prescribed`
-) VALUES (
-  1,           -- Assuming there is a customer with ID 1
-  0.5,         -- right_sph
-  1.0,         -- right_cyl
-  -0.5,        -- right_axis (Assuming your table allows negative values)
-  -1.0,        -- left_sph
-  2.0,         -- left_cyl
-  1.0,         -- left_axis
-  1.0,         -- add
-  32,          -- pd
-  '2024-01-01' -- date_prescribed
-);
+
 
 CREATE TABLE `optical_system`.`billings` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -83,4 +63,31 @@ CREATE TABLE `optical_system`.`payment_details` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`billing_id`) REFERENCES `billings`(`id`)
 );
+
+CREATE TABLE `optical_system`.`lenses` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `lens_type` VARCHAR(50) NOT NULL,
+  `material` VARCHAR(50),
+  `coating` VARCHAR(50),
+  `prescription_type` VARCHAR(50),
+  `price` FLOAT NOT NULL,
+  `quantity` INT NOT NULL,
+  `selling_price` FLOAT NOT NULL,
+  PRIMARY KEY (`id`));
+  
+  CREATE TABLE `optical_system`.`frames` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `brand` VARCHAR(50) NOT NULL,
+  `frame_type` VARCHAR(50),
+  `material` VARCHAR(50),
+  `color` VARCHAR(50),
+  `size` VARCHAR(50),
+  `price` FLOAT NOT NULL, -- This may be considered the cost price.
+  `selling_price` FLOAT NOT NULL, -- This is the price at which the frame is sold to customers.
+  PRIMARY KEY (`id`));
+
+  ALTER TABLE `optical_system`.`frames`
+ADD COLUMN `quantity` INT NOT NULL;
+
+
 

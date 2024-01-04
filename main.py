@@ -1,5 +1,6 @@
 # main.py
 from fastapi import FastAPI, HTTPException, applications
+from mysqlx import Session
 from sqlalchemy import create_engine, select, update, delete
 from sqlalchemy.exc import SQLAlchemyError
 from models.model import metadata, lenses, frames
@@ -14,6 +15,12 @@ from billing import router as billing_router
 
 # Include the billing router with the app instance
 
+def get_db():
+     db = Session(bind=engine)
+     try:
+         yield db
+     finally:
+         db.close()
 
 
 

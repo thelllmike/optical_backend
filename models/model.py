@@ -8,6 +8,7 @@ lenses = Table(
     Column("id", Integer, primary_key=True),
     Column("category", String(50)),
     Column("coating", String(50)),
+    Column("power", Float),
     Column("stock", Integer),
     Column("selling_price", Float),
     Column("cost", Float)

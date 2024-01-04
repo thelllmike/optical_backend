@@ -5,6 +5,7 @@ from typing import Optional
 class LensCreate(BaseModel):
     category: str
     coating: str
+    power: float
     stock: int
     selling_price: float
     cost: float
@@ -12,6 +13,7 @@ class LensCreate(BaseModel):
 class LensUpdate(BaseModel):
     category: Optional[str] = Field(None)
     coating: Optional[str] = Field(None)
+    power: Optional[float] = Field(None)
     stock: Optional[int] = Field(None)
     selling_price: Optional[float] = Field(None)
     cost: Optional[float] = Field(None)
