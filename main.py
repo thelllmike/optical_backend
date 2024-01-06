@@ -7,10 +7,10 @@ from models.model import metadata, lenses, frames
 from schemas.schemas import LensCreate, FrameCreate, LensUpdate, FrameUpdate
 from fastapi.middleware.cors import CORSMiddleware
 from billing import router as billing_router
+from dropdown import router as dropdown_router
 from sqlalchemy.orm import sessionmaker
 
-# Assuming that the billing router is defined correctly in the billing.py file
-from billing import router as billing_router
+
 
 
 # Include the billing router with the app instance
@@ -38,6 +38,7 @@ metadata.create_all(bind=engine)
 # Create a FastAPI instance
 app = FastAPI()
 app.include_router(billing_router, prefix="/billing", tags=["billing"])
+app.include_router(dropdown_router, prefix="/dropdown", tags=["dropdown"])
 # Add CORS middleware to allow cross-origin requests
 app.add_middleware(
     CORSMiddleware,
