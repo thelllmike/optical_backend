@@ -13,6 +13,7 @@ def get_db():
 
 router = APIRouter()
 
+#frames
 @router.get("/onlyframe")
 async def get_frames():
     with Session(engine) as session:
