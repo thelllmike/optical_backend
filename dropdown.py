@@ -23,15 +23,7 @@ async def get_frames():
         frame_names = [row[0] for row in result]
         return frame_names
     
-@router.get("/onlybrand")
-async def get_brand():
-    with Session(engine) as session:
-        # SQL query to select distinct values from the 'brand' column
-        sql = text("SELECT DISTINCT brand FROM frames")
-        result = session.execute(sql)
-        # Extract unique brand names and create a list
-        frame_brand = [row[0] for row in result]
-        return frame_brand
+
 
 #filter by frames which we selected 
 @router.get("/brands-by-frame")
@@ -43,6 +35,17 @@ async def get_brands_by_frame(frame: str = Query(...)):  # '...' makes the query
         # Extract unique brands for the specified frame
         brands = [row[0] for row in result]
         return brands
+    
+@router.get("/sizes-by-frame-and-brand")
+async def get_sizes_by_frame_and_brand(frame: str = Query(...), brand: str = Query(...)):
+    with Session(engine) as session:
+        # SQL query to select distinct size values where both frame and brand match
+        sql = text("SELECT DISTINCT size FROM frames WHERE frame = :frame AND brand = :brand")
+        result = session.execute(sql, {'frame': frame, 'brand': brand})
+        # Extract unique sizes for the specified frame and brand
+        sizes = [row[0] for row in result]
+        return sizes
+
 
 @router.get("/onlysize")
 async def get_size():
