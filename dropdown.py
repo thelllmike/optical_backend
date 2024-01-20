@@ -45,6 +45,47 @@ async def get_sizes_by_frame_and_brand(frame: str = Query(...), brand: str = Que
         # Extract unique sizes for the specified frame and brand
         sizes = [row[0] for row in result]
         return sizes
+    
+@router.get("/colors-by-frame-brand-size")
+async def get_colors_by_frame_brand_size(frame: str = Query(...), brand: str = Query(...), size: str = Query(...)):
+    with Session(engine) as session:
+        # SQL query to select distinct color values where frame, brand, and size match
+        sql = text("""
+            SELECT DISTINCT color 
+            FROM frames 
+            WHERE frame = :frame 
+            AND brand = :brand 
+            AND size = :size
+        """)
+        result = session.execute(sql, {'frame': frame, 'brand': brand, 'size': size})
+        # Extract unique colors for the specified frame, brand, and size
+        colors = [row[0] for row in result]
+        return colors
+    
+#filter model    
+@router.get("/models-by-selection")
+async def get_models_by_selection(
+    frame: str = Query(...), 
+    brand: str = Query(...), 
+    size: str = Query(...), 
+    color: str = Query(...)
+):
+    with Session(engine) as session:
+        # SQL query to select distinct model values where frame, brand, size, and color match
+        sql = text("""
+            SELECT DISTINCT model 
+            FROM frames 
+            WHERE frame = :frame 
+            AND brand = :brand 
+            AND size = :size
+            AND color = :color
+        """)
+        result = session.execute(sql, {'frame': frame, 'brand': brand, 'size': size, 'color': color})
+        # Extract unique models for the specified selection
+        models = [row[0] for row in result]
+        return models
+
+
 
 
 @router.get("/onlysize")
