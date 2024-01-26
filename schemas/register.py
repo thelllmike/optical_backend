@@ -40,3 +40,7 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
     branch_id: Optional[int] = None
     role: Optional[str] = None
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
