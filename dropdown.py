@@ -88,32 +88,27 @@ async def get_models_by_selection(
 
 
 
-@router.get("/onlysize")
-async def get_size():
+@router.get("/price-by-selection")
+async def get_price_by_selection(
+    frame: str = Query(...), 
+    brand: str = Query(...), 
+    size: str = Query(...), 
+    color: str = Query(...),
+    model: str = Query(...)
+):
     with Session(engine) as session:
-        # SQL query to select distinct values from the 'size' column
-        sql = text("SELECT DISTINCT size FROM frames")
-        result = session.execute(sql)
-        # Extract unique sizes and create a list
-        frame_size = [row[0] for row in result]
-        return frame_size
-    
-@router.get("/onlycolor")
-async def get_color():
-    with Session(engine) as session:
-        # SQL query to select distinct values from the 'color' column
-        sql = text("SELECT DISTINCT color FROM frames")
-        result = session.execute(sql)
-        # Extract unique colors and create a list
-        frame_color = [row[0] for row in result]
-        return frame_color
-    
-@router.get("/onlymodel")
-async def get_model():
-    with Session(engine) as session:
-        # SQL query to select distinct values from the 'model' column
-        sql = text("SELECT DISTINCT model FROM frames")
-        result = session.execute(sql)
-        # Extract unique models and create a list
-        frame_model = [row[0] for row in result]
-        return frame_model
+        # SQL query to select the price for the specified selection
+        sql = text("""
+            SELECT selling_price 
+            FROM frames 
+            WHERE frame = :frame 
+            AND brand = :brand 
+            AND size = :size
+            AND color = :color
+            AND model = :model
+        """)
+        result = session.execute(sql, {'frame': frame, 'brand': brand, 'size': size, 'color': color, 'model': model}).first()
+        if result:
+            return {"price": result[0]}
+        else:
+            return {"price": "Not available"}

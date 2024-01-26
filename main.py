@@ -8,6 +8,8 @@ from schemas.schemas import LensCreate, FrameCreate, LensUpdate, FrameUpdate
 from fastapi.middleware.cors import CORSMiddleware
 from billing import router as billing_router
 from dropdown import router as dropdown_router
+from register import router as register_router
+
 from sqlalchemy.orm import sessionmaker
 
 
@@ -39,6 +41,7 @@ metadata.create_all(bind=engine)
 app = FastAPI()
 app.include_router(billing_router, prefix="/billing", tags=["billing"])
 app.include_router(dropdown_router, prefix="/dropdown", tags=["dropdown"])
+app.include_router(register_router, prefix="/register", tags=["register"])
 # Add CORS middleware to allow cross-origin requests
 app.add_middleware(
     CORSMiddleware,

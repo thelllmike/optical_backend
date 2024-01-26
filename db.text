@@ -78,7 +78,7 @@ CREATE TABLE `optical_system`.`lenses` (
   CREATE TABLE `optical_system`.`frames` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `brand` VARCHAR(50) NOT NULL,
-  `frame_type` VARCHAR(50),
+  `frames` VARCHAR(50),
   `material` VARCHAR(50),
   `color` VARCHAR(50),
   `size` VARCHAR(50),
@@ -86,8 +86,34 @@ CREATE TABLE `optical_system`.`lenses` (
   `selling_price` FLOAT NOT NULL, -- This is the price at which the frame is sold to customers.
   PRIMARY KEY (`id`));
 
-  ALTER TABLE `optical_system`.`frames`
-ADD COLUMN `quantity` INT NOT NULL;
+
+
+CREATE TABLE optical_system.optical_shops (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    shop_name VARCHAR(255) NOT NULL UNIQUE,
+    head_office_address TEXT,
+    contact_number VARCHAR(45),
+    email VARCHAR(255) UNIQUE
+);
+
+
+CREATE TABLE optical_system.branches (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    branch_name VARCHAR(255),
+    branch_code VARCHAR(255) UNIQUE,
+    shop_id INT,
+    mobile_number VARCHAR(45),
+    FOREIGN KEY (shop_id) REFERENCES optical_shops(id)
+);
+
+CREATE TABLE optical_system.users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) UNIQUE,
+    password VARCHAR(255),
+    branch_id INT,
+    role VARCHAR(50),
+    FOREIGN KEY (branch_id) REFERENCES optical_system.branches(id)
+);
 
 
 
