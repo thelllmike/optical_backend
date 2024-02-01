@@ -1,4 +1,3 @@
-# schemas.py
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -9,6 +8,7 @@ class LensCreate(BaseModel):
     stock: int
     selling_price: float
     cost: float
+    branch_id: int  # Added branch_id
 
 class LensUpdate(BaseModel):
     category: Optional[str] = Field(None)
@@ -17,6 +17,7 @@ class LensUpdate(BaseModel):
     stock: Optional[int] = Field(None)
     selling_price: Optional[float] = Field(None)
     cost: Optional[float] = Field(None)
+    branch_id: Optional[int] = Field(None)  # Added branch_id as optional
 
 class FrameCreate(BaseModel):
     frame: str
@@ -27,6 +28,7 @@ class FrameCreate(BaseModel):
     color: str
     selling_price: float
     wholesale_price: float
+    branch_id: int  # Added branch_id
 
 class FrameUpdate(BaseModel):
     frame: Optional[str] = Field(None)
@@ -37,3 +39,4 @@ class FrameUpdate(BaseModel):
     color: Optional[str] = Field(None)
     selling_price: Optional[float] = Field(None)
     wholesale_price: Optional[float] = Field(None)
+    branch_id: Optional[int] = Field(None)  # Added branch_id as optional

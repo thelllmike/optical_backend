@@ -89,6 +89,19 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return {"id": result.inserted_primary_key[0]}
 
 # Endpoint for user login
+# @router.post("/login")
+# async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
+#     # Retrieve user from the database
+#     user = db.query(users).filter(users.c.email == user_credentials.email).first()
+#     if not user:
+#         raise HTTPException(status_code=401, detail="Incorrect email or password")
+
+#     # Verify password (ensure passwords are hashed in your database)
+#     if not verify_password(user_credentials.password, user.password):
+#         raise HTTPException(status_code=401, detail="Incorrect email or password")
+
+#     return {"message": "Login successful for user: {}".format(user.email)}
+
 @router.post("/login")
 async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
     # Retrieve user from the database
@@ -100,4 +113,9 @@ async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
     if not verify_password(user_credentials.password, user.password):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
 
-    return {"message": "Login successful for user: {}".format(user.email)}
+    # Include the branchId in the response
+    branch_id = user.branch_id  # Replace 'user.branch_id' with the actual way to get branchId from the user record
+    return {
+        "message": "Login successful for user: {}".format(user.email),
+        "branchId": branch_id
+    }

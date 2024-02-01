@@ -115,6 +115,16 @@ CREATE TABLE optical_system.users (
     FOREIGN KEY (branch_id) REFERENCES optical_system.branches(id)
 );
 
+ALTER TABLE `optical_system`.`frames`
+ADD COLUMN `branch_id` INT,
+ADD CONSTRAINT `fk_frames_branch`
+FOREIGN KEY (`branch_id`) REFERENCES `branches`(`id`);
+
+ALTER TABLE `optical_system`.`lenses`
+ADD COLUMN `branch_id` INT,
+ADD CONSTRAINT `fk_lenses_branch`
+FOREIGN KEY (`branch_id`) REFERENCES `branches`(`id`);
+
 
 
 
