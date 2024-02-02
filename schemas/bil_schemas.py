@@ -9,6 +9,7 @@ class CustomerCreate(BaseModel):
     nic_number: Optional[str] = None
     address: Optional[str] = None
     gender: Optional[str] = None
+    branch_id: int  # Assuming branch_id will be provided and is mandatory
 
 # Schema for updating an existing customer
 class CustomerUpdate(BaseModel):
@@ -17,6 +18,7 @@ class CustomerUpdate(BaseModel):
     nic_number: Optional[str] = None
     address: Optional[str] = None
     gender: Optional[str] = None
+    branch_id: Optional[int] = None  
 
 # Schema for creating a new prescription
 class PrescriptionCreate(BaseModel):

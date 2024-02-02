@@ -19,14 +19,7 @@ from passlib.context import CryptContext
 from fastapi import APIRouter
 
 router = APIRouter()
-# Define your tables (assuming they are already defined in your database)
 
-# Create a password context
-# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# def hash_password(password: str):
-#     return pwd_context.hash(password)
-# Create a password context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
@@ -88,19 +81,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()  # Commit the transaction
     return {"id": result.inserted_primary_key[0]}
 
-# Endpoint for user login
-# @router.post("/login")
-# async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
-#     # Retrieve user from the database
-#     user = db.query(users).filter(users.c.email == user_credentials.email).first()
-#     if not user:
-#         raise HTTPException(status_code=401, detail="Incorrect email or password")
 
-#     # Verify password (ensure passwords are hashed in your database)
-#     if not verify_password(user_credentials.password, user.password):
-#         raise HTTPException(status_code=401, detail="Incorrect email or password")
-
-#     return {"message": "Login successful for user: {}".format(user.email)}
 
 @router.post("/login")
 async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):

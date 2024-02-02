@@ -11,7 +11,8 @@ customers = Table(
     Column("full_name", String(100), nullable=False),
     Column("nic_number", String(20), nullable=True),
     Column("address", String(255), nullable=True),
-    Column("gender", String(20), nullable=True)
+    Column("gender", String(20), nullable=True),
+    Column("branch_id", Integer, ForeignKey('branches.id')) # Assuming you have a branches table
 )
 
 prescriptions = Table(

@@ -125,7 +125,10 @@ ADD COLUMN `branch_id` INT,
 ADD CONSTRAINT `fk_lenses_branch`
 FOREIGN KEY (`branch_id`) REFERENCES `branches`(`id`);
 
-
+ALTER TABLE `optical_system`.`customers`
+ADD COLUMN `branch_id` INT,
+ADD CONSTRAINT `fk_customers_branch`
+FOREIGN KEY (`branch_id`) REFERENCES `optical_system`.`branches`(`id`);
 
 
 
