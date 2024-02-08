@@ -32,6 +32,7 @@ class PrescriptionCreate(BaseModel):
     add: Optional[str] = None
     pd: Optional[str] = None
     date_prescribed: date
+   
 
 # Schema for billing creation
 
