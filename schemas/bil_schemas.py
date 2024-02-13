@@ -11,6 +11,9 @@ class CustomerCreate(BaseModel):
     gender: Optional[str] = None
     branch_id: int  # Assuming branch_id will be provided and is mandatory
 
+class CustomerResponse(CustomerCreate):
+    id: int  # Include the customer ID
+    
 # Schema for updating an existing customer
 class CustomerUpdate(BaseModel):
     mobile_number: Optional[str] = None

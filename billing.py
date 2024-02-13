@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from mysqlx import Session
 from sqlalchemy.exc import SQLAlchemyError
-from schemas.bil_schemas import CustomerCreate, PrescriptionCreate, BillingCreate, BillingItemCreate, PaymentDetailCreate
+from schemas.bil_schemas import CustomerCreate, CustomerResponse, PrescriptionCreate, BillingCreate, BillingItemCreate, PaymentDetailCreate
 from database import engine
 from models.billing import customers, prescriptions, billings, billing_items, payment_details
 
@@ -15,7 +15,7 @@ def get_db():
 
 router = APIRouter()
 
-@router.post("/customers", response_model=CustomerCreate)
+@router.post("/customers", response_model=CustomerResponse)
 async def create_customer(customer_data: CustomerCreate):
     with engine.begin() as connection:
         try:
