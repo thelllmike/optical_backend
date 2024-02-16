@@ -25,9 +25,9 @@ prescriptions = Table(
     Column("left_sph", String),
     Column("left_cyl", String),
     Column("left_axis", String),
-    Column("add", String),
-    Column("pd", String),
-    Column("date_prescribed", Date, nullable=False)
+    Column("left_add", String),
+    Column("right_add", String),
+  
 )
 
 billings = Table(

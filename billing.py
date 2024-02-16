@@ -1,5 +1,5 @@
 # customer.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 from mysqlx import Session
 from sqlalchemy.exc import SQLAlchemyError
 from schemas.bil_schemas import CustomerCreate, CustomerResponse, PrescriptionCreate, BillingCreate, BillingItemCreate, PaymentDetailCreate
@@ -26,16 +26,22 @@ async def create_customer(customer_data: CustomerCreate):
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/customers/{customer_id}/prescriptions", response_model=PrescriptionCreate)
-async def create_prescription(customer_id: int, prescription_data: PrescriptionCreate):
-    # Prepare the data for insertion
-    prescription_values = prescription_data.dict()
-    prescription_values.pop("customer_id", None)  # Remove customer_id if it exists in dict
 
-    # Insert prescription linked to the customer
+        
+@router.post("/prescriptions", response_model=PrescriptionCreate)
+async def create_prescription(prescription_data: PrescriptionCreate = Body(...)):
+    # Extract customer_id from the payload
+    customer_id = prescription_data.customer_id
+    
+    # Prepare the data for insertion, now including customer_id directly from the payload
+    prescription_values = prescription_data.dict()
+    
+    # Insert prescription, now using customer_id from the payload
     with engine.begin() as connection:
         try:
-            prescription_result = connection.execute(prescriptions.insert().values(customer_id=customer_id, **prescription_values))
+            prescription_result = connection.execute(
+                prescriptions.insert().values(**prescription_values)
+            )
             prescription_id = prescription_result.inserted_primary_key[0]
             return {"id": prescription_id, **prescription_data.dict()}
         except SQLAlchemyError as e:

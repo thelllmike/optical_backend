@@ -32,9 +32,9 @@ class PrescriptionCreate(BaseModel):
     left_sph: Optional[str] = None
     left_cyl: Optional[str] = None
     left_axis: Optional[str] = None
-    add: Optional[str] = None
-    pd: Optional[str] = None
-    date_prescribed: date
+    left_add: Optional[str] = None
+    right_add: Optional[str] = None
+
    
 
 # Schema for billing creation

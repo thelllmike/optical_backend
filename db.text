@@ -9,22 +9,23 @@ CREATE TABLE `optical_system`.`customers` (
 );
 
   
-  CREATE TABLE `optical_system`.`prescriptions` (
+ CREATE TABLE `optical_system`.`prescriptions` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `customer_id` INT NOT NULL,
-  `right_sph` FLOAT,
-  `right_cyl` FLOAT,
-  `right_axis` INT,
-  `left_sph` FLOAT,
-  `left_cyl` FLOAT,
-  `left_axis` INT,
-  `add` FLOAT,
-  `pd` FLOAT,
-  `date_prescribed` DATE NOT NULL,
+  `right_sph` VARCHAR(255),
+  `right_cyl` VARCHAR(255),
+  `right_axis` VARCHAR(255),
+  `left_sph` VARCHAR(255),
+  `left_cyl` VARCHAR(255),
+  `left_axis` VARCHAR(255),
+  `left_add` VARCHAR(255),
+  `right_add` VARCHAR(255),
+  `date_prescribed` DATE,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`),
-  INDEX `idx_customer` (`customer_id`)
+  INDEX `idx_customer` (`customer_id` ASC)
 );
+
 
 
 CREATE TABLE `optical_system`.`billings` (
