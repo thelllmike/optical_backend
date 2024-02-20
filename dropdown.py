@@ -110,6 +110,41 @@ async def get_models_by_selection(
 
 
 
+# @router.get("/price-by-selection")
+# async def get_price_by_selection(
+#     frame: str = Query(...), 
+#     brand: str = Query(...), 
+#     size: str = Query(...), 
+#     color: str = Query(...),
+#     model: str = Query(...),
+#     branch_id: int = Query(...),  # Add branch_id as a query parameter
+#     db: Session = Depends(get_db)
+# ):
+#     # SQL query to select the price for the specified selection and branch_id
+#     sql = text("""
+#         SELECT selling_price 
+#         FROM frames 
+#         WHERE frame = :frame 
+#         AND brand = :brand 
+#         AND size = :size
+#         AND color = :color
+#         AND model = :model
+#         AND branch_id = :branch_id  # Include branch_id in the WHERE clause
+#     """)
+#     result = db.execute(sql, {
+#         'frame': frame, 
+#         'brand': brand, 
+#         'size': size, 
+#         'color': color, 
+#         'model': model,
+#         'branch_id': branch_id  # Pass branch_id to the query
+#     }).first()
+
+#     if result:
+#         return {"price": result[0]}
+#     else:
+#         return {"price": "Not available"}
+
 @router.get("/price-by-selection")
 async def get_price_by_selection(
     frame: str = Query(...), 
@@ -117,12 +152,12 @@ async def get_price_by_selection(
     size: str = Query(...), 
     color: str = Query(...),
     model: str = Query(...),
-    branch_id: int = Query(...),  # Add branch_id as a query parameter
+    branch_id: int = Query(...),  # Added branch_id as a query parameter
     db: Session = Depends(get_db)
 ):
-    # SQL query to select the price for the specified selection and branch_id
+    # SQL query to select the id and price for the specified frame selection and branch_id
     sql = text("""
-        SELECT selling_price 
+        SELECT id, selling_price 
         FROM frames 
         WHERE frame = :frame 
         AND brand = :brand 
@@ -141,6 +176,6 @@ async def get_price_by_selection(
     }).first()
 
     if result:
-        return {"price": result[0]}
+        return {"id": result[0], "price": result[1]}  # Return both id and price
     else:
-        return {"price": "Not available"}
+        return {"message": "Frame not available"}

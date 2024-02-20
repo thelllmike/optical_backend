@@ -9,8 +9,9 @@ class CustomerCreate(BaseModel):
     nic_number: Optional[str] = None
     address: Optional[str] = None
     gender: Optional[str] = None
-    branch_id: int  # Assuming branch_id will be provided and is mandatory
+    branch_id: int  # Assuming branch_id is mandatory
 
+# Schema for customer response
 class CustomerResponse(CustomerCreate):
     id: int  # Include the customer ID
     
@@ -35,24 +36,28 @@ class PrescriptionCreate(BaseModel):
     left_add: Optional[str] = None
     right_add: Optional[str] = None
 
-   
-
 # Schema for billing creation
-
 class BillingCreate(BaseModel):
     customer_id: int
     invoice_date: date
-    delivery_date: Optional[date] = None  # Add this line for delivery_date
+    delivery_date: Optional[date] = None
     sales_person: Optional[str] = None
+
+# Schema for billing response
+class BillingResponse(BillingCreate):
+    id: Optional[int] = None
+
 # Schema for creating a billing item
 class BillingItemCreate(BaseModel):
     billing_id: int
-    # lens: str
-    # frame: str  # 'frame' or 'lens'
     lens_id: int
-    frame_id: int  # ID from frames or lenses table
-    quantity: int
-    unit_price: float
+    frame_id: int
+    frame_qty: int
+    lens_qty: int
+
+# Schema for billing item response
+class BillingItemResponse(BillingItemCreate):
+    id: Optional[int] = None
 
 # Schema for payment details creation
 class PaymentDetailCreate(BaseModel):
@@ -64,8 +69,3 @@ class PaymentDetailCreate(BaseModel):
     advance_paid: Optional[float] = None
     balance_amount: Optional[float] = None
     pay_type: Optional[str] = None  # E.g., 'cash', 'credit card', 'check'
-
-# Schemas for updates can be created similarly to how LensUpdate and FrameUpdate are defined,
-# with all fields being optional and defaulting to None.
-
-# Additional read schemas can also be defined to reflect the structure of the data when it is being retrieved from the database.

@@ -50,6 +50,14 @@ CREATE TABLE `optical_system`.`billing_items` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`billing_id`) REFERENCES `billings`(`id`)
 );
+ALTER TABLE `optical_system`.`billing_items`
+DROP COLUMN `quantity`,
+DROP COLUMN `unit_price`;
+
+ALTER TABLE `optical_system`.`billing_items`
+ADD COLUMN `frame_qty` INT NOT NULL,
+ADD COLUMN `lens_qty` INT NOT NULL;
+//
 
 CREATE TABLE `optical_system`.`payment_details` (
   `id` INT NOT NULL AUTO_INCREMENT,

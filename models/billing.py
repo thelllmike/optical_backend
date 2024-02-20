@@ -47,8 +47,8 @@ billing_items = Table(
     # Column("lens", String(50), nullable=False),
     Column("frame_id", Integer, nullable=False), # 'frame' or 'lens'
     Column("lens_id", Integer, nullable=False), # ID from frames or lenses table
-    Column("quantity", Integer, nullable=False),
-    Column("unit_price", Float, nullable=False)
+    Column("frame_qty", Integer, nullable=False),
+    Column("lens_qty", Float, nullable=False)
 )
 
 payment_details = Table(

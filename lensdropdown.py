@@ -48,17 +48,46 @@ async def get_powers_by_category_and_coating(category: str = Query(...), coating
     powers = [row[0] for row in result]
     return powers
 
+# @router.get("/lens-price-by-selection")
+# async def get_lens_price_by_selection(
+#     category: str = Query(...), 
+#     coating: str = Query(...), 
+#     power: float = Query(...),
+#     branch_id: int = Query(...),  # Add branch_id as a query parameter
+#     db: Session = Depends(get_db)
+# ):
+#     # SQL query to select the price for the specified lens selection and branch_id
+#     sql = text("""
+#         SELECT selling_price 
+#         FROM lenses 
+#         WHERE category = :category 
+#         AND coating = :coating 
+#         AND power = :power
+#         AND branch_id = :branch_id  # Include branch_id in the WHERE clause
+#     """)
+#     result = db.execute(sql, {
+#         'category': category, 
+#         'coating': coating, 
+#         'power': power,
+#         'branch_id': branch_id  # Pass branch_id to the query
+#     }).first()
+
+#     if result:
+#         return {"price": result[0]}
+#     else:
+#         return {"price": "Not available"}
+
 @router.get("/lens-price-by-selection")
 async def get_lens_price_by_selection(
     category: str = Query(...), 
     coating: str = Query(...), 
     power: float = Query(...),
-    branch_id: int = Query(...),  # Add branch_id as a query parameter
+    branch_id: int = Query(...),  # Added branch_id as a query parameter
     db: Session = Depends(get_db)
 ):
-    # SQL query to select the price for the specified lens selection and branch_id
+    # SQL query to select the price and id for the specified lens selection and branch_id
     sql = text("""
-        SELECT selling_price 
+        SELECT id, selling_price 
         FROM lenses 
         WHERE category = :category 
         AND coating = :coating 
@@ -73,7 +102,7 @@ async def get_lens_price_by_selection(
     }).first()
 
     if result:
-        return {"price": result[0]}
+        return {"id": result[0], "price": result[1]}
     else:
-        return {"price": "Not available"}
+        return {"message": "Lens not available"}
 
