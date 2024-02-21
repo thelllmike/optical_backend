@@ -69,3 +69,15 @@ class PaymentDetailCreate(BaseModel):
     advance_paid: Optional[float] = None
     balance_amount: Optional[float] = None
     pay_type: Optional[str] = None  # E.g., 'cash', 'credit card', 'check'
+
+# Pydantic model for response data
+class PaymentDetailResponse(BaseModel):
+    id: int
+    billing_id: int
+    total_amount: float
+    discount: Optional[float] = None
+    fitting_charges: Optional[float] = None
+    grand_total: float
+    advance_paid: Optional[float] = None
+    balance_amount: Optional[float] = None
+    pay_type: Optional[str] = None
