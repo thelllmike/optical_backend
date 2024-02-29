@@ -60,20 +60,6 @@ async def create_billing(billing_data: BillingCreate):
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
         
-# def get_engine():
-#     # Return the engine instance here
-#     return engine
-
-# @router.post("/billings", response_model=BillingCreate)
-# async def create_billing(billing_data: BillingCreate, engine: Engine = Depends(get_engine)):
-#     with engine.begin() as connection:
-#         try:
-#             # Insert billing into the database
-#             billing_result = connection.execute(insert(billings).values(**billing_data.dict()))
-#             billing_id = billing_result.inserted_primary_key[0]
-#             return {"id": billing_id, **billing_data.dict()}
-#         except SQLAlchemyError as e:
-#             raise HTTPException(status_code=500, detail=str(e))
 
 
         
@@ -100,30 +86,10 @@ async def create_billing_item(billing_item_data: BillingItemCreate):
             raise HTTPException(status_code=500, detail=str(e))
 
 
-# @router.post("/billings/payment-details", response_model=PaymentDetailCreate)
-# async def create_billing_item(payment_detail_data: PaymentDetailCreate):
-#     with engine.begin() as connection:
-#         try:
-#             # Extract billing_id from the request body
-#             billing_id = payment_detail_data.billing_id
 
-#             # Create a dictionary from billing_item_data and remove billing_id if it exists
-#             payment_detail_data_dict = payment_detail_data.dict()
-#             # Keep the billing_id in the response
-#             payment_detail_data_dict_with_id = payment_detail_data_dict.copy()
-#             payment_detail_data_dict.pop('billing_id', None)
-
-#             # Insert billing item linked to the billing record and get the inserted id
-#             result = connection.execute(billing_items.insert().values(billing_id=billing_id, **billing_item_data_dict))
-#             inserted_primary_key = result.inserted_primary_key[0]
-
-#             # Return response including the id
-#             return BillingItemResponse(id=inserted_primary_key, **payment_detail_data_dict_with_id)
-#         except SQLAlchemyError as e:
-#             raise HTTPException(status_code=500, detail=str(e))
         
-from fastapi import HTTPException
-from sqlalchemy.exc import SQLAlchemyError
+# from fastapi import HTTPException
+# from sqlalchemy.exc import SQLAlchemyError
 
 @router.post("/billings/payment-details", response_model=PaymentDetailCreate)
 async def create_payment_detail(payment_detail_data: PaymentDetailCreate):

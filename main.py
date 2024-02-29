@@ -10,6 +10,7 @@ from billing import router as billing_router
 from dropdown import router as dropdown_router
 from register import router as register_router
 from product import router as product_router
+from Quary import router as Quary_router
 from lensdropdown import router as lensdropdown_router
 
 from sqlalchemy.orm import sessionmaker
@@ -46,6 +47,7 @@ app.include_router(dropdown_router, prefix="/dropdown", tags=["dropdown"])
 app.include_router(register_router, prefix="/register", tags=["register"])
 app.include_router(product_router, prefix="/product", tags=["product"])
 app.include_router(lensdropdown_router, prefix="/lensdropdown", tags=["lensdropdown"])
+app.include_router(Quary_router, prefix="/Quary", tags=["Quary"])
 # Add CORS middleware to allow cross-origin requests
 app.add_middleware(
     CORSMiddleware,
