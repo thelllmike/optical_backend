@@ -27,6 +27,8 @@ prescriptions = Table(
     Column("left_axis", String),
     Column("left_add", String),
     Column("right_add", String),
+    Column("right_pd", String),
+    Column("left_pd", String),
   
 )
 

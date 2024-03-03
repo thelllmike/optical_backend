@@ -1,15 +1,27 @@
 # customer.py
-from fastapi import APIRouter, Body, Depends, HTTPException
+import select
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from mysqlx import Session
 from sqlalchemy import Engine, insert
 from sqlalchemy.exc import SQLAlchemyError
+from models.Quary import Customer
 from schemas.bil_schemas import BillingItemResponse, BillingResponse, CustomerCreate, CustomerResponse, PrescriptionCreate, BillingCreate, BillingItemCreate, PaymentDetailCreate
 from database import engine
 from models.billing import customers, prescriptions, billings, billing_items, payment_details
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import sessionmaker
+
+# def get_db():
+#     db = Session(bind=engine)
+#     try:
+#         yield db
+#     finally:
+#         db.close()
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
-    db = Session(bind=engine)
+    db = SessionLocal()
     try:
         yield db
     finally:
@@ -17,8 +29,20 @@ def get_db():
 
 router = APIRouter()
 
+@router.get("/customers/by-phone/{phone_number}", response_model=CustomerResponse)
+def get_customer_by_phone(phone_number: str, db: Session = Depends(get_db)):
+    customer = db.query(Customer).filter(Customer.mobile_number == phone_number).first()
+    if customer is None:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return customer
+
 @router.post("/customers", response_model=CustomerResponse)
-async def create_customer(customer_data: CustomerCreate):
+async def create_customer(customer_data: CustomerCreate, db: Session = Depends(get_db)):
+    # Check if customer with the same phone number already exists
+    existing_customer = db.query(customers).filter(customers.c.mobile_number == customer_data.mobile_number).first()
+    if existing_customer:
+        raise HTTPException(status_code=400, detail="A customer with this phone number already exists")
+
     with engine.begin() as connection:
         try:
             # Insert customer into the database
@@ -27,6 +51,18 @@ async def create_customer(customer_data: CustomerCreate):
             return {"id": customer_id, **customer_data.dict()}
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
+
+
+# @router.post("/customers", response_model=CustomerResponse)
+# async def create_customer(customer_data: CustomerCreate):
+#     with engine.begin() as connection:
+#         try:
+#             # Insert customer into the database
+#             customer_result = connection.execute(customers.insert().values(**customer_data.dict()))
+#             customer_id = customer_result.inserted_primary_key[0]
+#             return {"id": customer_id, **customer_data.dict()}
+#         except SQLAlchemyError as e:
+#             raise HTTPException(status_code=500, detail=str(e))
 
 
         
