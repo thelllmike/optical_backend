@@ -1,5 +1,7 @@
 from collections import UserDict, UserList, UserString
 from msilib import schema
+import select
+from sre_constants import BRANCH
 import bcrypt
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import JSONResponse
@@ -11,8 +13,10 @@ from typing import Optional
 from database import SessionLocal
 from database import engine
 from models.register import metadata, optical_shops , branches , users
-from schemas.register import BranchCreate, OpticalShopCreate, OpticalShopUpdate, UserCreate, UserLogin
+from schemas.register import BranchCreate, BranchDetail, BranchUpdate, OpticalShopCreate, OpticalShopUpdate, UserCreate, UserLogin
 from passlib.context import CryptContext
+from sqlalchemy import select
+
 
 
 
@@ -100,3 +104,19 @@ async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
         "message": "Login successful for user: {}".format(user.email),
         "branchId": branch_id
     }
+
+@router.get("/branch/{branch_id}", response_model=BranchDetail)
+async def get_branch_details(branch_id: int, db: Session = Depends(get_db)):
+    # Correctly construct the select statement
+    query = select(branches).where(branches.c.id == branch_id)
+    result = db.execute(query).fetchone()
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Branch not found")
+
+    # Directly unpacking the result into the response model might require adjustment based on actual response
+    return BranchDetail(
+        branch_name=result.branch_name,
+        mobile_number=result.mobile_number
+        # Map other fields as necessary
+    )

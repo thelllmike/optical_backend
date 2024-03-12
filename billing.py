@@ -1,5 +1,6 @@
 # customer.py
 import select
+from sre_constants import BRANCH
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from mysqlx import Session
 from sqlalchemy import Engine, insert
@@ -10,6 +11,8 @@ from database import engine
 from models.billing import customers, prescriptions, billings, billing_items, payment_details
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
+
+from schemas.register import BranchCreate
 
 # def get_db():
 #     db = Session(bind=engine)
@@ -51,6 +54,10 @@ async def create_customer(customer_data: CustomerCreate, db: Session = Depends(g
             return {"id": customer_id, **customer_data.dict()}
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
 
 
 # @router.post("/customers", response_model=CustomerResponse)
@@ -146,7 +153,6 @@ async def create_payment_detail(payment_detail_data: PaymentDetailCreate):
             return response_data
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=str(e))
-
 
 
 

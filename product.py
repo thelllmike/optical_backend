@@ -107,59 +107,6 @@ async def delete_frame(id: int):
             raise HTTPException(status_code=404, detail="Frame not found")
         return {"message": "Frame deleted successfully"}
     
-# #update lens stock
-# @router.put("/update-lens-stock/{branch_id}/{lens_id}")
-# async def update_lens_stock(branch_id: int, lens_id: int, quantity: int):
-#     with engine.begin() as connection:  # Use begin() to start a transaction
-#         # Fetch the current stock for the lens
-#         select_stmt = select(lenses.c.stock).where(lenses.c.id == lens_id, lenses.c.branch_id == branch_id)
-#         current_stock_result = connection.execute(select_stmt).scalar()
-
-#         if current_stock_result is None:
-#             raise HTTPException(status_code=404, detail="Lens not found")
-        
-#         current_stock = current_stock_result
-#         if current_stock < quantity:
-#             raise HTTPException(status_code=400, detail="Not enough stock available")
-
-#         # Deduct the quantity from the stock
-#         new_stock = current_stock - quantity
-#         update_stmt = update(lenses).where(lenses.c.id == lens_id, lenses.c.branch_id == branch_id).values(stock=new_stock)
-        
-#         try:
-#             result = connection.execute(update_stmt)
-#             if result.rowcount == 0:
-#                 raise HTTPException(status_code=404, detail="Lens not found")
-#             return {"message": "Stock updated successfully", "new_stock": new_stock}
-#         except SQLAlchemyError as e:
-#             raise HTTPException(status_code=500, detail=str(e))
-        
-# #update frame stock
-# @router.put("/update-frame-stock/{branch_id}/{frame_id}")
-# async def update_frame_stock(branch_id: int, frame_id: int, quantity: int):
-#     with engine.begin() as connection:  # Use begin() to start a transaction
-#         # Fetch the current stock for the frame
-#         select_stmt = select(frames.c.stock).where(frames.c.id == frame_id, frames.c.branch_id == branch_id)
-#         current_stock_result = connection.execute(select_stmt).scalar()
-
-#         if current_stock_result is None:
-#             raise HTTPException(status_code=404, detail="Frame not found")
-        
-#         current_stock = current_stock_result
-#         if current_stock < quantity:
-#             raise HTTPException(status_code=400, detail="Not enough stock available")
-
-#         # Deduct the quantity from the stock
-#         new_stock = current_stock - quantity
-#         update_stmt = update(frames).where(frames.c.id == frame_id, frames.c.branch_id == branch_id).values(stock=new_stock)
-        
-#         try:
-#             result = connection.execute(update_stmt)
-#             if result.rowcount == 0:
-#                 raise HTTPException(status_code=404, detail="Frame not found")
-#             return {"message": "Stock updated successfully", "new_stock": new_stock}
-#         except SQLAlchemyError as e:
-#             raise HTTPException(status_code=500, detail=str(e))
     
 @router.put("/update-lens-stock")
 async def update_lens_stock(update_data: dict = Body(...)):

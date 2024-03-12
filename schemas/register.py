@@ -28,6 +28,10 @@ class BranchUpdate(BaseModel):
     branch_code: Optional[str] = None
     mobile_number: Optional[str] = None  # Add this line
 
+class BranchDetail(BaseModel):
+    branch_name: str
+    mobile_number: Optional[str] = None
+
 # User Schemas
 class UserCreate(BaseModel):
     email: EmailStr

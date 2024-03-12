@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import extract, func
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models.billing import customers, billings, billing_items, payment_details
@@ -57,3 +58,29 @@ async def get_billing_details(branch_id: int = Query(...), db: Session = Depends
     # Return the formatted result
     return formatted_result
 
+@router.get("/monthly-sales")
+async def get_monthly_sales(db: Session = Depends(get_db)):
+    monthly_sales = db.query(
+        extract('year', billings.c.invoice_date).label("year"),
+        extract('month', billings.c.invoice_date).label("month"),
+        func.sum(payment_details.c.grand_total).label("total_sales")
+    ).join(
+        payment_details, billings.c.id == payment_details.c.billing_id
+    ).group_by(
+        "year", "month"
+    ).order_by(
+        "year", "month"
+    ).all()
+
+    if not monthly_sales:
+        raise HTTPException(status_code=404, detail="No sales data found")
+
+    formatted_sales = [
+        {
+            "year": year,
+            "month": month,
+            "total_sales": total_sales
+        } for year, month, total_sales in monthly_sales
+    ]
+
+    return formatted_sales
