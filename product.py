@@ -1,4 +1,4 @@
-from winreg import HKEY_CURRENT_USER
+# from winreg import HKEY_CURRENT_USER
 from fastapi import Body, FastAPI, HTTPException, Depends, Query, status, APIRouter , Header
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update, delete
